@@ -57,9 +57,10 @@ class ApiInterceptor extends Interceptor {
           type: err.type,
         );
       case DioExceptionType.connectionError:
+        final detail = err.message ?? err.error?.toString() ?? 'unknown';
         return DioException(
           requestOptions: err.requestOptions,
-          error: const NetworkException(),
+          error: NetworkException(detail),
           type: err.type,
         );
       case DioExceptionType.badResponse:

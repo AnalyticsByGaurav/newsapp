@@ -9,10 +9,11 @@ class ApiException implements Exception {
 }
 
 class NetworkException extends ApiException {
-  const NetworkException() : super('No internet connection');
+  const NetworkException([String detail = 'No internet connection'])
+      : super(detail);
 
   @override
-  String toString() => 'NetworkException: No internet connection';
+  String toString() => 'NetworkException: $message';
 }
 
 class ServerException extends ApiException {
