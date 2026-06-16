@@ -26,6 +26,11 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Generate Android project structure
+        run: |
+          flutter create --platforms=android --project-name namasteram_news --org com.namasteram /tmp/flutter_base
+          cp -r /tmp/flutter_base/android ./android
+
       - name: Get dependencies
         run: flutter pub get
 
