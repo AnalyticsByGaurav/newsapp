@@ -19,12 +19,6 @@ void main() async {
   await Hive.openBox(AppConstants.hiveBoxSettings);
   await Hive.openBox(AppConstants.hiveBoxCategories);
 
-  // Firebase - graceful fallback if google-services.json not present
-  try {
-    // await Firebase.initializeApp();
-    // await FirebaseMessaging.instance.requestPermission();
-  } catch (_) {}
-
   // Setup GetIt DI
   await setupLocator();
 
