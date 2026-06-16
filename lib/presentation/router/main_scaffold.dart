@@ -21,7 +21,7 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
 
-  static const _routes = ['/', '/categories', '/shorts', '/bookmarks', '/settings'];
+  static const _routes = ['/', '/categories', '/web-stories', '/bookmarks', '/settings'];
 
   void _onTap(int index) {
     if (index == _currentIndex) return;
@@ -58,9 +58,9 @@ class _MainScaffoldState extends State<MainScaffold> {
               label: 'श्रेणियां',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.video_collection_outlined),
-              activeIcon: Icon(Icons.video_collection),
-              label: 'शॉर्ट्स',
+              icon: Icon(Icons.auto_stories_outlined),
+              activeIcon: Icon(Icons.auto_stories),
+              label: 'स्टोरीज़',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bookmark_outline),

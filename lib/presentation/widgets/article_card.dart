@@ -57,7 +57,9 @@ class ArticleCard extends StatelessWidget {
                 children: [
                   if (article.category.isNotEmpty)
                     Text(
-                      article.category,
+                      article.categoryHi?.isNotEmpty == true
+                          ? article.categoryHi!
+                          : article.category,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w600,
@@ -65,7 +67,7 @@ class ArticleCard extends StatelessWidget {
                     ),
                   const SizedBox(height: 2),
                   Text(
-                    article.title,
+                    article.displayTitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       height: 1.4,
@@ -154,7 +156,9 @@ class ArticleCardLarge extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
-                            article.category,
+                            article.categoryHi?.isNotEmpty == true
+                                ? article.categoryHi!
+                                : article.category,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
@@ -165,7 +169,7 @@ class ArticleCardLarge extends StatelessWidget {
                         ),
                       const SizedBox(height: 6),
                       Text(
-                        article.title,
+                        article.displayTitle,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,

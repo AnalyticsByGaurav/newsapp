@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class CategoriesEvent extends Equatable {
   const CategoriesEvent();
@@ -8,4 +8,11 @@ abstract class CategoriesEvent extends Equatable {
 
 class LoadCategoriesEvent extends CategoriesEvent {
   const LoadCategoriesEvent();
+}
+
+class SelectCategoryEvent extends CategoriesEvent {
+  final String? slug;
+  const SelectCategoryEvent(this.slug);
+  @override
+  List<Object?> get props => [slug];
 }

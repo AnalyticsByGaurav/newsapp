@@ -105,16 +105,21 @@ class _HomePageState extends State<HomePage> {
                             isSelected: state.selectedSlug == null,
                             onTap: () {
                               context.read<CategoriesBloc>().add(
-                                LoadCategoriesEvent(),
+                                const SelectCategoryEvent(null),
                               );
                               context.read<HomeBloc>().add(const HomeLoadEvent());
                             },
                           ),
                           ...state.categories.map((cat) => CategoryChip(
-                            label: cat.name,
-                            color: '#E53935',
+                            label: cat.nameHi?.isNotEmpty == true
+                                ? cat.nameHi!
+                                : cat.name,
+                            color: cat.color,
                             isSelected: state.selectedSlug == cat.slug,
                             onTap: () {
+                              context.read<CategoriesBloc>().add(
+                                SelectCategoryEvent(cat.slug),
+                              );
                               context.read<HomeBloc>().add(
                                 HomeLoadEvent(categorySlug: cat.slug),
                               );
@@ -280,7 +285,7 @@ class _FeaturedBannerState extends State<_FeaturedBanner> {
                       left: 16,
                       right: 16,
                       child: Text(
-                        a.title,
+                        a.displayTitle,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,

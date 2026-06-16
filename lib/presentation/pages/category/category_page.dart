@@ -77,17 +77,23 @@ class _CategoryCard extends StatelessWidget {
 
   const _CategoryCard({required this.category});
 
+  Color _parseColor(String hex) {
+    try {
+      return Color(int.parse('FF${hex.replaceAll('#', '')}', radix: 16));
+    } catch (_) {
+      return const Color(0xFFc0392b);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = [
-      Colors.red, Colors.blue, Colors.green, Colors.orange,
-      Colors.purple, Colors.teal, Colors.indigo, Colors.amber,
-    ];
-    final color = colors[category.id % colors.length];
+    final color = _parseColor(category.color);
+    final displayName = category.nameHi?.isNotEmpty == true
+        ? category.nameHi!
+        : category.name;
 
     return InkWell(
-      onTap: () => context.push('/category/${category.slug}?name=${Uri.encodeComponent(category.name)}'),
+      onTap: () => context.push('/category/${category.slug}?name=${Uri.encodeComponent(displayName)}'),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
@@ -103,15 +109,34 @@ class _CategoryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-              category.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'NotoSansDevanagari',
+            if (category.nameHi?.isNotEmpty == true) ...[
+              Text(
+                category.nameHi!,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSansDevanagari',
+                ),
               ),
-            ),
+              Text(
+                category.name,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  fontFamily: 'NotoSansDevanagari',
+                ),
+              ),
+            ] else
+              Text(
+                category.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSansDevanagari',
+                ),
+              ),
             const SizedBox(height: 4),
             Text(
               '${category.count} समाचार',

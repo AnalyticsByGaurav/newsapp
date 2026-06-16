@@ -63,7 +63,9 @@ class _ArticleDetailView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          article.category.isNotEmpty ? article.category : 'समाचार',
+          article.categoryHi?.isNotEmpty == true
+              ? article.categoryHi!
+              : article.category.isNotEmpty ? article.category : 'समाचार',
           style: const TextStyle(fontSize: 16),
         ),
         actions: [
@@ -82,7 +84,7 @@ class _ArticleDetailView extends StatelessWidget {
             tooltip: 'शेयर करें',
             onPressed: () {
               final url = '${ApiConstants.baseUrl.replaceAll('/api/v1', '')}/article/${article.slug}';
-              Share.share('${article.title}\n\n$url');
+              Share.share('${article.displayTitle}\n\n$url');
             },
           ),
         ],
@@ -120,7 +122,9 @@ class _ArticleDetailView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        article.category,
+                        article.categoryHi?.isNotEmpty == true
+                            ? article.categoryHi!
+                            : article.category,
                         style: TextStyle(
                           color: theme.colorScheme.primary,
                           fontSize: 12,
@@ -132,7 +136,7 @@ class _ArticleDetailView extends StatelessWidget {
                   const SizedBox(height: 12),
                   // Title
                   Text(
-                    article.title,
+                    article.displayTitle,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       height: 1.3,
@@ -180,7 +184,7 @@ class _ArticleDetailView extends StatelessWidget {
                   // Excerpt
                   if (article.excerpt.isNotEmpty)
                     Text(
-                      article.excerpt,
+                      article.displayExcerpt,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[700],
                         fontStyle: FontStyle.italic,
@@ -257,7 +261,7 @@ class _RelatedCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              article.title,
+              article.displayTitle,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, fontFamily: 'NotoSansDevanagari'),

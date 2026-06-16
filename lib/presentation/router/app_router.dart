@@ -11,8 +11,6 @@ import '../blocs/comment/comment_bloc.dart';
 import '../blocs/news/news_bloc.dart';
 import '../blocs/news/news_event.dart';
 import '../blocs/search/search_bloc.dart';
-import '../blocs/shorts/shorts_bloc.dart';
-import '../blocs/shorts/shorts_event.dart';
 import '../blocs/web_stories/web_stories_bloc.dart';
 import '../blocs/web_stories/web_stories_event.dart';
 import '../pages/home/home_page.dart';
@@ -21,7 +19,6 @@ import '../pages/article/article_page.dart';
 import '../pages/search/search_page.dart';
 import '../pages/stories/stories_page.dart';
 import '../pages/stories/story_viewer_page.dart';
-import '../pages/shorts/shorts_page.dart';
 import '../pages/bookmarks/bookmarks_page.dart';
 import '../pages/notifications/notifications_page.dart';
 import '../pages/settings/settings_page.dart';
@@ -52,12 +49,12 @@ class AppRouter {
             ),
           ),
           GoRoute(
-            path: '/shorts',
+            path: '/web-stories',
             pageBuilder: (context, state) => NoTransitionPage(
               child: BlocProvider(
                 create: (_) =>
-                    sl<ShortsBloc>()..add(const LoadShortsEvent()),
-                child: const ShortsPage(),
+                    sl<WebStoriesBloc>()..add(const LoadWebStoriesEvent()),
+                child: const WebStoriesPage(),
               ),
             ),
           ),

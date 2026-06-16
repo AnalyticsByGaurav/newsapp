@@ -10,6 +10,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
       : _getCategories = getCategories,
         super(const CategoriesInitial()) {
     on<LoadCategoriesEvent>(_onLoad);
+    on<SelectCategoryEvent>(_onSelect);
   }
 
   Future<void> _onLoad(
@@ -22,6 +23,13 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
       emit(CategoriesLoaded(categories: categories));
     } catch (e) {
       emit(CategoriesError(message: e.toString()));
+    }
+  }
+
+  void _onSelect(SelectCategoryEvent event, Emitter<CategoriesState> emit) {
+    final current = state;
+    if (current is CategoriesLoaded) {
+      emit(current.copyWith(selectedSlug: event.slug));
     }
   }
 }
