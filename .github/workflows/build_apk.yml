@@ -32,21 +32,18 @@ jobs:
           cp -r /tmp/flutter_base/android ./android
           # Upgrade Kotlin to 1.9.24
           sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "1.9.24"/' android/settings.gradle
-          # Ensure INTERNET + network state permissions in main manifest (release build)
+
+      - name: Add INTERNET permission to release manifest
+        run: |
           MANIFEST=android/app/src/main/AndroidManifest.xml
-          grep -q 'INTERNET' $MANIFEST || sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n    <application|' $MANIFEST
-          # Allow cleartext for local/debug: add networkSecurityConfig
-          cat > android/app/src/main/res/xml/network_security_config.xml << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <network-security-config>
-              <base-config cleartextTrafficPermitted="false">
-                  <trust-anchors>
-                      <certificates src="system"/>
-                  </trust-anchors>
-              </base-config>
-          </network-security-config>
-          EOF
-          mkdir -p android/app/src/main/res/xml
+          echo "--- Manifest before patch ---"
+          cat $MANIFEST
+          # Insert INTERNET permission before <application tag if not already present
+          if ! grep -q 'android.permission.INTERNET' $MANIFEST; then
+            sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' $MANIFEST
+          fi
+          echo "--- Manifest after patch ---"
+          cat $MANIFEST
 
       - name: Get dependencies
         run: flutter pub get
