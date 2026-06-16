@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../core/errors/exceptions.dart';
 import '../../domain/entities/article.dart';
 import '../../domain/entities/category.dart';
@@ -15,24 +14,12 @@ import '../models/article_model.dart';
 class NewsRepositoryImpl implements NewsRepository {
   final NewsRemoteDataSource _remote;
   final NewsLocalDataSource _local;
-  final Connectivity _connectivity;
 
   NewsRepositoryImpl({
     required NewsRemoteDataSource remote,
     required NewsLocalDataSource local,
-    required Connectivity connectivity,
   })  : _remote = remote,
-        _local = local,
-        _connectivity = connectivity;
-
-  Future<bool> _hasConnection() async {
-    try {
-      final results = await _connectivity.checkConnectivity();
-      return results.any((r) => r != ConnectivityResult.none);
-    } catch (_) {
-      return false;
-    }
-  }
+        _local = local;
 
   @override
   Future<(List<Article>, PaginationMeta)> getLatestNews({
@@ -42,16 +29,6 @@ class NewsRepositoryImpl implements NewsRepository {
   }) async {
     final cacheKey = 'news_${categorySlug ?? 'all'}_p$page';
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedArticles(cacheKey: cacheKey);
-        if (cached != null) {
-          return (
-            cached as List<Article>,
-            const PaginationMeta(page: 1, perPage: 15, total: 0),
-          );
-        }
-        throw const NetworkException();
-      }
       final (articles, meta) = await _remote.getLatestNews(
         page: page,
         perPage: perPage,
@@ -78,11 +55,6 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<List<Category>> getCategories() async {
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedCategories();
-        if (cached != null) return cached;
-        throw const NetworkException();
-      }
       final categories = await _remote.getCategories();
       await _local.cacheCategories(categories);
       return categories;
@@ -96,11 +68,6 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<Article> getArticle(String slug) async {
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedArticle(slug);
-        if (cached != null) return cached;
-        throw const NetworkException();
-      }
       final article = await _remote.getArticle(slug);
       await _local.cacheArticle(article);
       return article;
@@ -116,7 +83,6 @@ class NewsRepositoryImpl implements NewsRepository {
     String query, {
     int page = 1,
   }) async {
-    if (!await _hasConnection()) throw const NetworkException();
     final (articles, meta) = await _remote.searchArticles(query, page: page);
     return (articles as List<Article>, meta);
   }
@@ -124,7 +90,6 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<List<Article>> getRelatedArticles(String slug) async {
     try {
-      if (!await _hasConnection()) throw const NetworkException();
       return await _remote.getRelatedArticles(slug);
     } catch (_) {
       return [];
@@ -136,16 +101,6 @@ class NewsRepositoryImpl implements NewsRepository {
     int page = 1,
   }) async {
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedWebStories();
-        if (cached != null) {
-          return (
-            cached as List<WebStory>,
-            const PaginationMeta(page: 1, perPage: 15, total: 0),
-          );
-        }
-        throw const NetworkException();
-      }
       final (stories, meta) = await _remote.getWebStories(page: page);
       if (page == 1) await _local.cacheWebStories(stories);
       return (stories as List<WebStory>, meta);
@@ -166,16 +121,6 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<(List<ShortVideo>, PaginationMeta)> getShorts({int page = 1}) async {
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedShorts();
-        if (cached != null) {
-          return (
-            cached as List<ShortVideo>,
-            const PaginationMeta(page: 1, perPage: 15, total: 0),
-          );
-        }
-        throw const NetworkException();
-      }
       final (shorts, meta) = await _remote.getShorts(page: page);
       if (page == 1) await _local.cacheShorts(shorts);
       return (shorts as List<ShortVideo>, meta);
@@ -196,11 +141,6 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<SiteSettings> getSettings() async {
     try {
-      if (!await _hasConnection()) {
-        final cached = _local.getCachedSettings();
-        if (cached != null) return cached;
-        throw const NetworkException();
-      }
       final settings = await _remote.getSettings();
       await _local.cacheSettings(settings);
       return settings;
@@ -213,13 +153,11 @@ class NewsRepositoryImpl implements NewsRepository {
 
   @override
   Future<void> postComment(CommentRequest request) async {
-    if (!await _hasConnection()) throw const NetworkException();
     await _remote.postComment(request);
   }
 
   @override
   Future<({String question, String token})> getCaptcha() async {
-    if (!await _hasConnection()) throw const NetworkException();
     return await _remote.getCaptcha();
   }
 

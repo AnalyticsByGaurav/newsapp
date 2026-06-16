@@ -1,5 +1,4 @@
-﻿import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:get_it/get_it.dart';
+﻿import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../constants/app_constants.dart';
 import '../network/dio_client.dart';
@@ -33,9 +32,6 @@ import '../../presentation/blocs/comment/comment_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> setupLocator() async {
-  // External dependencies
-  sl.registerLazySingleton<Connectivity>(() => Connectivity());
-
   // Hive boxes
   sl.registerLazySingleton<Box>(
     () => Hive.box(AppConstants.hiveBoxArticles),
@@ -79,7 +75,6 @@ Future<void> setupLocator() async {
     () => NewsRepositoryImpl(
       remote: sl<NewsRemoteDataSource>(),
       local: sl<NewsLocalDataSource>(),
-      connectivity: sl<Connectivity>(),
     ),
   );
 
