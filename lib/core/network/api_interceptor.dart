@@ -57,10 +57,15 @@ class ApiInterceptor extends Interceptor {
           type: err.type,
         );
       case DioExceptionType.connectionError:
-        final detail = err.message ?? err.error?.toString() ?? 'unknown';
+        final raw = err.message ?? err.error?.toString() ?? '';
+        final msg = raw.contains('Failed host lookup')
+            ? 'Server tak pahuncha nahi ja raha. Private DNS (dns.google) try karein.'
+            : raw.contains('CERTIFICATE')
+                ? 'SSL certificate error. Network settings check karein.'
+                : 'Server se connection nahi ho pa raha. Internet check karein.';
         return DioException(
           requestOptions: err.requestOptions,
-          error: NetworkException(detail),
+          error: NetworkException(msg),
           type: err.type,
         );
       case DioExceptionType.badResponse:
