@@ -94,7 +94,7 @@ class HtmlParser {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: const Border(left: BorderSide(color: Color(0xFFE53935), width: 4)),
-          color: const Color(0xFFE53935).withValues(alpha: 0.05),
+          color: const Color(0xFFE53935).withOpacity(0.05),
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(8),
             bottomRight: Radius.circular(8),

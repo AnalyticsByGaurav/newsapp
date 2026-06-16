@@ -95,7 +95,7 @@ class _CategoryCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [color.withValues(alpha: 0.8), color],
+            colors: [color.withOpacity(0.8), color],
           ),
         ),
         padding: const EdgeInsets.all(16),

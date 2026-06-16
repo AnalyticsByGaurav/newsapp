@@ -1,8 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../blocs/article/article_bloc.dart';
+import '../blocs/article/article_event.dart';
 import '../blocs/bookmarks/bookmarks_bloc.dart';
 import '../blocs/bookmarks/bookmarks_event.dart';
 import '../blocs/categories/categories_bloc.dart';
@@ -26,8 +26,7 @@ import '../pages/bookmarks/bookmarks_page.dart';
 import '../pages/notifications/notifications_page.dart';
 import '../pages/settings/settings_page.dart';
 import 'main_scaffold.dart';
-
-final sl = GetIt.instance;
+import '../../core/di/injection_container.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
