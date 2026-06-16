@@ -4,12 +4,12 @@ class ApiConstants {
   static const String baseUrl = 'https://imgaurav.in/newsportal/api/v1';
   static const String apiKey = 'nm_live_6231eb48446c770c6a21fbd7042dc5c1'; // ← Step 1 ka key yahan paste karo
 
-  static const String latest = '/latest';
+  static const String latest = '/news';         // server: /news
   static const String categories = '/categories';
   static const String article = '/article';
   static const String search = '/search';
   static const String related = '/related';
-  static const String webStories = '/web-stories';
+  static const String webStories = '/stories';  // server: /stories
   static const String shorts = '/shorts';
   static const String settings = '/settings';
   static const String comments = '/comments';
