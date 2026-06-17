@@ -1,4 +1,4 @@
-name: Build APK
+name: Build & Release
 
 on:
   push:
@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HAS_KEYSTORE: ${{ secrets.KEYSTORE_BASE64 != '' }}
 
     steps:
       - name: Checkout code
@@ -30,30 +32,97 @@ jobs:
         run: |
           flutter create --platforms=android --project-name namasteram_news --org com.namasteram /tmp/flutter_base
           cp -r /tmp/flutter_base/android ./android
-          # Upgrade Kotlin to 1.9.24
           sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "1.9.24"/' android/settings.gradle
 
       - name: Add INTERNET permission to release manifest
         run: |
           MANIFEST=android/app/src/main/AndroidManifest.xml
-          echo "--- Manifest before patch ---"
-          cat $MANIFEST
-          # Insert INTERNET permission before <application tag if not already present
           if ! grep -q 'android.permission.INTERNET' $MANIFEST; then
             sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' $MANIFEST
           fi
-          echo "--- Manifest after patch ---"
-          cat $MANIFEST
+
+      - name: Setup signing (keystore)
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.STORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Patch build.gradle for signing
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          python3 - <<'PYEOF'
+          with open('android/app/build.gradle', 'r') as f:
+              content = f.read()
+
+          keystore_loader = '''
+          def keystoreProperties = new Properties()
+          def keystorePropertiesFile = rootProject.file('key.properties')
+          if (keystorePropertiesFile.exists()) {
+              keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+          }
+
+          '''
+          signing_configs = '''
+              signingConfigs {
+                  release {
+                      keyAlias keystoreProperties['keyAlias']
+                      keyPassword keystoreProperties['keyPassword']
+                      storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                      storePassword keystoreProperties['storePassword']
+                  }
+              }
+          '''
+          content = content.replace('android {', keystore_loader + 'android {', 1)
+          content = content.replace('    defaultConfig {', signing_configs + '\n    defaultConfig {', 1)
+          content = content.replace('signingConfig signingConfigs.debug', 'signingConfig signingConfigs.release')
+
+          with open('android/app/build.gradle', 'w') as f:
+              f.write(content)
+          print("build.gradle patched for signing")
+          PYEOF
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK (release)
+      # ── Signed build (Play Store) ─────────────────────────────────────────
+      - name: Build signed AAB (Play Store upload)
+        if: env.HAS_KEYSTORE == 'true'
+        run: flutter build appbundle --release
+
+      - name: Build signed APK (direct install)
+        if: env.HAS_KEYSTORE == 'true'
         run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Upload AAB artifact
+        if: env.HAS_KEYSTORE == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: namasteram-news-v${{ github.run_number }}
+          name: namasteram-news-PlayStore-v${{ github.run_number }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 90
+
+      - name: Upload signed APK artifact
+        if: env.HAS_KEYSTORE == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: namasteram-news-APK-v${{ github.run_number }}
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+      # ── Unsigned build (no keystore configured yet) ───────────────────────
+      - name: Build unsigned APK (fallback)
+        if: env.HAS_KEYSTORE == 'false'
+        run: flutter build apk --release
+
+      - name: Upload unsigned APK artifact
+        if: env.HAS_KEYSTORE == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: namasteram-news-UNSIGNED-v${{ github.run_number }}
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30

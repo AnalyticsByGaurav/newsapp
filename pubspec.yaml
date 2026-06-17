@@ -35,3 +35,12 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+  fonts:
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSansDevanagari-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansDevanagari-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansDevanagari-Bold.ttf
+          weight: 700
