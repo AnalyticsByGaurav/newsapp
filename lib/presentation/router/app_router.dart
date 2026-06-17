@@ -22,13 +22,18 @@ import '../pages/stories/story_viewer_page.dart';
 import '../pages/bookmarks/bookmarks_page.dart';
 import '../pages/notifications/notifications_page.dart';
 import '../pages/settings/settings_page.dart';
+import '../pages/splash/splash_page.dart';
 import 'main_scaffold.dart';
 import '../../core/di/injection_container.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashPage(),
+      ),
       ShellRoute(
         builder: (context, state, child) => MainScaffold(child: child),
         routes: [

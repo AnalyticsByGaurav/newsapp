@@ -38,7 +38,25 @@ class BookmarksPage extends StatelessWidget {
                   onDismissed: (_) {
                     context.read<BookmarksBloc>().add(RemoveBookmarkEvent(article.slug));
                   },
-                  child: ArticleCard(article: article),
+                  child: Stack(
+                    children: [
+                      ArticleCard(article: article),
+                      Positioned(
+                        right: 4,
+                        top: 4,
+                        child: IconButton(
+                          icon: const Icon(Icons.bookmark_remove_outlined, size: 20),
+                          color: Colors.red[400],
+                          tooltip: 'बुकमार्क हटाएं',
+                          onPressed: () {
+                            context.read<BookmarksBloc>().add(
+                              RemoveBookmarkEvent(article.slug),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             );

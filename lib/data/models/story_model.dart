@@ -14,7 +14,7 @@ class WebStoryModel extends WebStory {
       id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title']?.toString() ?? '',
       slug: json['slug']?.toString() ?? '',
-      thumbnail: json['thumbnail']?.toString(),
+      thumbnail: (json['cover_image'] ?? json['thumbnail'])?.toString(),
       slidesCount: (json['slides_count'] as num?)?.toInt() ?? 0,
     );
   }
