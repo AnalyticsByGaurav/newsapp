@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../blocs/web_stories/web_stories_bloc.dart';
 import '../../blocs/web_stories/web_stories_event.dart';
 import '../../blocs/web_stories/web_stories_state.dart';
@@ -108,7 +109,7 @@ class _StoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    story.title,
+                    story.displayTitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -119,9 +120,26 @@ class _StoryCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    '${story.slidesCount} स्लाइड',
-                    style: const TextStyle(color: Colors.white70, fontSize: 11),
+                  Row(
+                    children: [
+                      if (story.slidesCount > 0) ...[
+                        const Icon(Icons.auto_stories, color: Colors.white70, size: 11),
+                        const SizedBox(width: 3),
+                        Text(
+                          '${story.slidesCount} स्लाइड',
+                          style: const TextStyle(color: Colors.white70, fontSize: 11),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      const Icon(Icons.remove_red_eye_outlined, color: Colors.white70, size: 11),
+                      const SizedBox(width: 3),
+                      Text(
+                        story.views > 0 ? '${story.views}' : (story.publishedAt != null
+                            ? DateFormat('d MMM').format(story.publishedAt!)
+                            : ''),
+                        style: const TextStyle(color: Colors.white70, fontSize: 11),
+                      ),
+                    ],
                   ),
                 ],
               ),
