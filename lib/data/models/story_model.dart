@@ -17,8 +17,10 @@ class StorySlideModel extends StorySlide {
   });
 
   factory StorySlideModel.fromJson(Map<String, dynamic> json) {
+    int _parseInt(dynamic v, int fallback) =>
+        (v is num) ? v.toInt() : int.tryParse(v?.toString() ?? '') ?? fallback;
     return StorySlideModel(
-      id: (json['id'] as num?)?.toInt() ?? 0,
+      id: _parseInt(json['id'], 0),
       imgUrl: json['img_url']?.toString(),
       bgColor: json['bg_color']?.toString() ?? '#1a1208',
       bgGradient: json['bg_gradient']?.toString(),
@@ -29,7 +31,7 @@ class StorySlideModel extends StorySlide {
       ctaText: json['cta_text']?.toString(),
       ctaUrl: json['cta_url']?.toString(),
       ctaColor: json['cta_color']?.toString() ?? '#c0392b',
-      duration: (json['duration'] as num?)?.toInt() ?? 5,
+      duration: _parseInt(json['duration'], 5),
     );
   }
 }
