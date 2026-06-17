@@ -1,4 +1,6 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/entities/article.dart';
@@ -218,17 +220,14 @@ class _FeaturedBanner extends StatefulWidget {
 
 class _FeaturedBannerState extends State<_FeaturedBanner> {
   late final PageController _pageController;
+  Timer? _timer;
   int _current = 0;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _autoAdvance();
-  }
-
-  void _autoAdvance() {
-    Future.delayed(const Duration(seconds: 5), () {
+    _timer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
       final next = (_current + 1) % widget.articles.length;
       _pageController.animateToPage(
@@ -236,12 +235,12 @@ class _FeaturedBannerState extends State<_FeaturedBanner> {
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
-      _autoAdvance();
     });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -264,13 +263,17 @@ class _FeaturedBannerState extends State<_FeaturedBanner> {
                   fit: StackFit.expand,
                   children: [
                     if (a.imageUrl != null)
-                      Image.network(
-                        a.webpUrl ?? a.imageUrl!,
+                      CachedNetworkImage(
+                        imageUrl: a.webpUrl ?? a.imageUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(color: Colors.grey[300]),
+                        memCacheWidth: 800,
+                        memCacheHeight: 450,
+                        fadeInDuration: const Duration(milliseconds: 200),
+                        placeholder: (_, __) => Container(color: Colors.grey[900]),
+                        errorWidget: (_, __, ___) => Container(color: Colors.grey[900]),
                       )
                     else
-                      Container(color: Colors.grey[300]),
+                      Container(color: Colors.grey[900]),
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(

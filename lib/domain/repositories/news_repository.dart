@@ -26,6 +26,8 @@ abstract class NewsRepository {
 
   Future<(List<WebStory>, PaginationMeta)> getWebStories({int page = 1});
 
+  Future<WebStory> getStoryDetail(String slug);
+
   Future<(List<ShortVideo>, PaginationMeta)> getShorts({int page = 1});
 
   Future<SiteSettings> getSettings();

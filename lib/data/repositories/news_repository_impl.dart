@@ -119,6 +119,11 @@ class NewsRepositoryImpl implements NewsRepository {
   }
 
   @override
+  Future<WebStory> getStoryDetail(String slug) async {
+    return await _remote.getStoryDetail(slug);
+  }
+
+  @override
   Future<(List<ShortVideo>, PaginationMeta)> getShorts({int page = 1}) async {
     try {
       final (shorts, meta) = await _remote.getShorts(page: page);

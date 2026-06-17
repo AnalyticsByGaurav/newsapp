@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -151,10 +152,13 @@ class _ShortVideoItemState extends State<_ShortVideoItem> {
                 ),
               )
             else if (widget.short.thumbnail != null)
-              Image.network(
-                widget.short.thumbnail!,
+              CachedNetworkImage(
+                imageUrl: widget.short.thumbnail!,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(color: Colors.grey[900]),
+                memCacheWidth: 600,
+                memCacheHeight: 1067,
+                placeholder: (_, __) => Container(color: Colors.grey[900]),
+                errorWidget: (_, __, ___) => Container(color: Colors.grey[900]),
               )
             else
               Container(color: Colors.grey[900]),

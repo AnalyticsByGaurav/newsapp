@@ -10,6 +10,7 @@ class ApiConstants {
   static const String search = '/search';
   static const String related = '/related';
   static const String webStories = '/stories';  // server: /stories
+  static const String storyDetail = '/story';   // server: /story?slug=
   static const String shorts = '/shorts';
   static const String settings = '/settings';
   static const String comments = '/comments';

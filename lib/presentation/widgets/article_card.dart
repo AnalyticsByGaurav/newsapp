@@ -31,6 +31,9 @@ class ArticleCard extends StatelessWidget {
                     ? CachedNetworkImage(
                         imageUrl: article.webpUrl ?? article.imageUrl!,
                         fit: BoxFit.cover,
+                        memCacheWidth: 200,
+                        memCacheHeight: 150,
+                        fadeInDuration: const Duration(milliseconds: 150),
                         placeholder: (_, __) => const ShimmerBox(width: 100, height: 75),
                         errorWidget: (_, __, ___) => Container(
                           color: theme.colorScheme.primaryContainer,
@@ -125,6 +128,9 @@ class ArticleCardLarge extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: article.webpUrl ?? article.imageUrl!,
                     fit: BoxFit.cover,
+                    memCacheWidth: 800,
+                    memCacheHeight: 450,
+                    fadeInDuration: const Duration(milliseconds: 200),
                     placeholder: (_, __) => const ShimmerBox(width: double.infinity, height: 200),
                     errorWidget: (_, __, ___) => Container(
                       color: theme.colorScheme.primaryContainer,

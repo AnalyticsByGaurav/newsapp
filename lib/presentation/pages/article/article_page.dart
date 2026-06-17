@@ -100,6 +100,9 @@ class _ArticleDetailView extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: article.webpUrl ?? article.imageUrl!,
                   fit: BoxFit.cover,
+                  memCacheWidth: 800,
+                  memCacheHeight: 450,
+                  fadeInDuration: const Duration(milliseconds: 200),
                   placeholder: (_, __) => const ShimmerBox(
                     width: double.infinity,
                     height: 220,
@@ -255,6 +258,11 @@ class _RelatedCard extends StatelessWidget {
                     ? CachedNetworkImage(
                         imageUrl: article.webpUrl ?? article.imageUrl!,
                         fit: BoxFit.cover,
+                        memCacheWidth: 320,
+                        memCacheHeight: 200,
+                        fadeInDuration: const Duration(milliseconds: 150),
+                        placeholder: (_, __) => Container(color: Colors.grey[200]),
+                        errorWidget: (_, __, ___) => Container(color: Colors.grey[200]),
                       )
                     : Container(color: Colors.grey[200]),
               ),

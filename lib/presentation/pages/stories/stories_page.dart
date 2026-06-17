@@ -85,7 +85,11 @@ class _StoryCard extends StatelessWidget {
               CachedNetworkImage(
                 imageUrl: story.thumbnail!,
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => Container(color: Colors.grey[300]),
+                memCacheWidth: 400,
+                memCacheHeight: 667,
+                fadeInDuration: const Duration(milliseconds: 200),
+                placeholder: (_, __) => Container(color: Colors.grey[850]),
+                errorWidget: (_, __, ___) => Container(color: Colors.grey[850]),
               )
             else
               Container(

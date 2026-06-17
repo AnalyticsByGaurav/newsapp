@@ -24,6 +24,7 @@ abstract class NewsRemoteDataSource {
   });
   Future<List<ArticleModel>> getRelatedArticles(String slug);
   Future<(List<WebStoryModel>, PaginationMeta)> getWebStories({int page});
+  Future<WebStoryModel> getStoryDetail(String slug);
   Future<(List<ShortVideoModel>, PaginationMeta)> getShorts({int page});
   Future<SiteSettingsModel> getSettings();
   Future<({String question, String token})> getCaptcha();
@@ -143,6 +144,12 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     final stories = _parseList(body['data'], WebStoryModel.fromJson);
     final meta = _parseMeta(body);
     return (stories, meta);
+  }
+
+  @override
+  Future<WebStoryModel> getStoryDetail(String slug) async {
+    final body = await _fetch(ApiConstants.storyDetail, params: {'slug': slug});
+    return WebStoryModel.fromJson(body['data'] as Map<String, dynamic>);
   }
 
   @override
