@@ -72,8 +72,12 @@ class ApiInterceptor extends Interceptor {
         final statusCode = err.response?.statusCode;
         final data = err.response?.data;
         String message = 'Server error occurred.';
-        if (data is Map && data['message'] != null) {
-          message = data['message'].toString();
+        if (data is Map) {
+          if (data['message'] != null) {
+            message = data['message'].toString();
+          } else if (data['error'] is Map && data['error']['message'] != null) {
+            message = data['error']['message'].toString();
+          }
         }
         if (statusCode == 401 || statusCode == 403) {
           return DioException(
